@@ -1,8 +1,9 @@
 "use client";
-
+import { useRef, useState } from "react";
 import Image from "next/image";
-
 import { ListTree } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+
 
 type Article = {
   slug: string;
