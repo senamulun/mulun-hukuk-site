@@ -1,8 +1,5 @@
 "use client";
-
 import * as React from "react";
-import Image from "next/image";
-import { ListTree } from "lucide-react";
 
 type Article = {
   slug: string;
@@ -132,3 +129,4 @@ export default function ArticleBody({ article }: { article: Article }) {
     </>
   );
 }
+
