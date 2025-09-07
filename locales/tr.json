@@ -1,0 +1,14 @@
+{
+  "nav.home": "Ana Sayfa",
+  "nav.about": "Hakkımızda",
+  "nav.team": "Ekibimiz",
+  "nav.practice": "Çalışma Alanları",
+  "nav.law": "Mevzuat",
+  "nav.articles": "Makaleler",
+  "nav.contact": "İletişim",
+
+  "hero.title": "Mulun Hukuk & Danışmanlık",
+  "hero.subtitle": "Yabancılar, İcra, Ceza ve Ticaret/Taşıma hukukunda butik ve sonuç odaklı hizmet.",
+  "hero.cta.contact": "İletişim",
+  "hero.cta.practice": "Çalışma Alanları"
+}
