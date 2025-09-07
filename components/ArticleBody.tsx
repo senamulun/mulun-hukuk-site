@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import * as React from "react";
 import Image from "next/image";
 import { ListTree } from "lucide-react";
 
@@ -28,11 +28,11 @@ function slugify(text: string) {
 }
 
 export default function ArticleBody({ article }: { article: Article }) {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [toc, setToc] = useState<TocItem[]>([]);
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const [toc, setToc] = React.useState<TocItem[]>([]);
 
   // Başlıklara id ekle + TOC üret + smooth scroll
-  useEffect(() => {
+  React.useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
 
