@@ -10,11 +10,12 @@ import {
   Ship,
   ScrollText,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 type Area = {
   key: string;
   id: string;
-  icon: any;
+  icon: LucideIcon; // any yerine güçlü tip
   title: string;
   lead: string;
   bullets: string[];

@@ -93,6 +93,8 @@ export default function MakalelerClient() {
   const [sort, setSort] = useState<SortKey>("date-desc");
 
   const alpha = useMemo(() => getAlphaIndex(ARTICLES), []);
+  // ❗ hook'ları map/koşul içinde çağırmamak için Set'e çevirip üstte tutuyoruz
+  const alphaSet = useMemo(() => new Set(alpha), [alpha]);
 
   const filtered = useMemo(() => {
     const q = normalize(query);
@@ -216,7 +218,7 @@ export default function MakalelerClient() {
             "A","B","C","Ç","D","E","F","G","Ğ","H","I","İ","J","K","L","M",
             "N","O","Ö","P","R","S","Ş","T","U","Ü","V","Y","Z"
           ].map((L) => {
-            const enabled = useMemo(() => alpha.includes(L), [alpha]);
+            const enabled = alphaSet.has(L);
             const active = activeLetter === L;
             return (
               <button
