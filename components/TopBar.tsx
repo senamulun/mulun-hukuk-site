@@ -51,9 +51,9 @@ const navItems: NavItem[] = [
 const PRESET = {
   wrapOffset: "translate-y-0 md:translate-y-0",
   desktopSize: "h-28 w-[420px]",
-  mobileSize: "h-24 w-72",
+  mobileSize: "h-24 w-56",          // w-72 → w-56 (mobilde daha dar)
   desktopSizeSm: "h-16 w-[300px]",
-  mobileSizeSm: "h-14 w-48",
+  mobileSizeSm: "h-14 w-40",        // w-48 → w-40 (shrunk mobil)
   borderWidth: "border-[3px]",
   maskHMobile: "h-full",
   maskHDesktop: "md:h-full",
@@ -186,9 +186,9 @@ export default function TopBar() {
                   src={logoSrc}
                   alt={brandName}
                   fill
-                  className="object-cover"
+                  className="object-contain"                 {/* cover → contain */}
                   priority
-                  sizes="(max-width: 768px) 18rem, 26rem"
+                  sizes="(max-width: 768px) 12rem, 22rem"     {/* mobil 12rem, desktop 22rem */}
                 />
               </div>
             </div>
