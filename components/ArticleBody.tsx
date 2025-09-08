@@ -1,5 +1,6 @@
 "use client";
-import * as React from "react";
+
+import ArticleBody from "@/components/ArticleBody.client";
 
 type Article = {
   slug: string;
@@ -129,4 +130,3 @@ export default function ArticleBody({ article }: { article: Article }) {
     </>
   );
 }
-

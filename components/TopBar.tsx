@@ -49,24 +49,15 @@ const navItems: NavItem[] = [
 
 /* ——— Boyut/scroll ayarları ——— */
 const PRESET = {
-  // Taşma yok
   wrapOffset: "translate-y-0 md:translate-y-0",
-
-  // Başlangıç boyutları (değişmedi)
   desktopSize: "h-28 w-[420px]",
   mobileSize: "h-24 w-72",
-
-  // Scroll sonrası daha KÜÇÜK boyutlar (orantılı küçültüldü)
-  desktopSizeSm: "h-16 w-[300px]",   // önce 20/360'tı
-  mobileSizeSm: "h-14 w-48",         // önce 16/56'ydı
-
-  // Kenarlık katmanı var ama maske full, görünmez
+  desktopSizeSm: "h-16 w-[300px]",
+  mobileSizeSm: "h-14 w-48",
   borderWidth: "border-[3px]",
   maskHMobile: "h-full",
   maskHDesktop: "md:h-full",
-
-  // Küçülmeyi daha erken başlat
-  shrinkAt: 20, // önce 40
+  shrinkAt: 20,
 };
 
 export default function TopBar() {
@@ -97,6 +88,12 @@ export default function TopBar() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Route değişince mobil menüyü kapat
+  useEffect(() => {
+    setOpen(false);
+    setOpenSub(false);
+  }, [pathname]);
+
   // Scroll’da küçült
   useEffect(() => {
     let ticking = false;
@@ -109,7 +106,7 @@ export default function TopBar() {
         ticking = true;
       }
     };
-    onScroll(); // ilk yüklemede kontrol
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -129,8 +126,7 @@ export default function TopBar() {
   const logoSrc = site?.ogImagePath || "/og.jpg";
   const brandName = site?.name || "Mulun Hukuk & Danışmanlık";
 
-  // Dinamik boyut/padding
-  const rowPad = isShrunk ? "py-1 md:py-1" : "py-3 md:py-3"; // daha az padding
+  const rowPad = isShrunk ? "py-1 md:py-1" : "py-3 md:py-3";
   const logoMobileSize = isShrunk ? PRESET.mobileSizeSm : PRESET.mobileSize;
   const logoDesktopSize = isShrunk ? PRESET.desktopSizeSm : PRESET.desktopSize;
 
@@ -165,9 +161,9 @@ export default function TopBar() {
       {/* ANA NAVBAR — scroll’da küçülür */}
       <div className="bg-[#0a1b36] border-b border-[#0a1b36] overflow-visible transition-all duration-300">
         <div
-          className={`mx-auto flex max-w-7xl items-center justify-between px-4 md:px-6 ${rowPad} transition-all duration-300`}
+          className={`relative mx-auto flex max-w-7xl items-center justify-between px-4 md:px-6 ${rowPad} transition-all duration-300`}
         >
-          {/* LOGO — üst hizalı, orantılı küçülür */}
+          {/* LOGO */}
           <Link
             href="/"
             className="flex items-center gap-2 self-start"
@@ -215,7 +211,7 @@ export default function TopBar() {
                 <div key={item.href} className="relative group">
                   <Link
                     href={item.href}
-                    className={`flex items中心 gap-1 text-sm transition ${
+                    className={`flex items-center gap-1 text-sm transition ${
                       isActive(item.href) ? "text-white" : "text-white/80 hover:text-white"
                     }`}
                   >
@@ -243,13 +239,14 @@ export default function TopBar() {
             )}
           </nav>
 
-          {/* MOBİL MENÜ BUTONU */}
+          {/* MOBİL MENÜ BUTONU — daima görünür */}
           <button
             type="button"
-            aria-label="Menüyü aç"
+            aria-label={open ? "Menüyü kapat" : "Menüyü aç"}
             aria-expanded={open}
-            onClick={() => setOpen(true)}
-            className="md:hidden inline-flex items-center justify-center rounded-md p-2 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            aria-controls="mobile-drawer"
+            onClick={() => setOpen((v) => !v)}
+            className="md:hidden absolute right-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-md p-2 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors z-[65]"
           >
             <FourLinesIcon className="h-5 w-7" lineClassName="bg-white" />
           </button>
@@ -266,6 +263,7 @@ export default function TopBar() {
 
       {/* MOBİL DRAWER */}
       <aside
+        id="mobile-drawer"
         className={`fixed right-0 top-0 z-[61] h-full w-[82%] max-w-[360px] transform bg-[#0a1b36] text-white transition-transform duration-300 md:hidden ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
