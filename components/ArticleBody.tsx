@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import ArticleBody from "@/components/ArticleBody.client";
 
 type Article = {

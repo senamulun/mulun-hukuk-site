@@ -1,4 +1,4 @@
-/* /app/components/TopBar.tsx — Scroll’da daha fazla küçülme (orantılı), yazıları ortaya çıkarır */
+/* /app/components/TopBar.tsx — Mobile hamburger hep görünür, logo taşma yapmaz */
 'use client';
 
 import { useEffect, useState } from "react";
@@ -49,14 +49,6 @@ const navItems: NavItem[] = [
 
 /* ——— Boyut/scroll ayarları ——— */
 const PRESET = {
-  wrapOffset: "translate-y-0 md:translate-y-0",
-  desktopSize: "h-28 w-[420px]",
-  mobileSize: "h-24 w-56",          // w-72 → w-56 (mobilde daha dar)
-  desktopSizeSm: "h-16 w-[300px]",
-  mobileSizeSm: "h-14 w-40",        // w-48 → w-40 (shrunk mobil)
-  borderWidth: "border-[3px]",
-  maskHMobile: "h-full",
-  maskHDesktop: "md:h-full",
   shrinkAt: 20,
 };
 
@@ -127,11 +119,9 @@ export default function TopBar() {
   const brandName = site?.name || "Mulun Hukuk & Danışmanlık";
 
   const rowPad = isShrunk ? "py-1 md:py-1" : "py-3 md:py-3";
-  const logoMobileSize = isShrunk ? PRESET.mobileSizeSm : PRESET.mobileSize;
-  const logoDesktopSize = isShrunk ? PRESET.desktopSizeSm : PRESET.desktopSize;
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-50 overflow-x-clip">
       {/* ÜST ÇUBUK */}
       <div className="w-full bg-[#081325] text-white text-xs md:text-sm px-4 py-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -159,39 +149,25 @@ export default function TopBar() {
       </div>
 
       {/* ANA NAVBAR — scroll’da küçülür */}
-      <div className="bg-[#0a1b36] border-b border-[#0a1b36] overflow-visible transition-all duration-300">
-        <div
-          className={`relative mx-auto flex max-w-7xl items-center justify-between px-4 md:px-6 ${rowPad} transition-all duration-300`}
-        >
-          {/* LOGO */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 self-start"
-            aria-label={`${brandName} anasayfa`}
-          >
-            <div
-              className={`relative ${PRESET.wrapOffset} ${logoMobileSize} md:${logoDesktopSize} transition-all duration-300`}
-            >
-              {/* Kenarlık katmanı (maskeyle gizli) */}
-              <div
-                className={`absolute inset-0 z-10 ${PRESET.borderWidth} border-white border-t-0 pointer-events-none`}
+      <div className="bg-[#0a1b36] border-b border-[#0a1b36] transition-all duration-300">
+        <div className={`relative mx-auto flex max-w-7xl items-center justify-between px-4 md:px-6 ${rowPad} transition-all duration-300`}>
+          {/* LOGO — (Basitleştirildi: fill/absolute yok, object-contain ile taşma olmaz) */}
+          <Link href="/" className="flex items-center gap-2 min-w-0 shrink-0" aria-label={`${brandName} anasayfa`}>
+            <div className="h-10 sm:h-12 md:h-16 w-auto">
+              <Image
+                src={logoSrc}
+                alt={brandName}
+                width={420}         /* intrinsic */
+                height={120}
+                priority
+                className="h-full w-auto object-contain block select-none"
+                sizes="(max-width: 768px) 160px, 320px"
               />
-              {/* Maske: tüm alanı kapatıp kenarlığı gizler */}
-              <div
-                className={`absolute left-0 right-0 -top-[1px] z-20 bg-[#0a1b36] ${PRESET.maskHMobile} ${PRESET.maskHDesktop} pointer-events-none`}
-              />
-              {/* Görsel */}
-              <div className="absolute inset-0 z-30 overflow-hidden">
-                <Image
-                  src={logoSrc}
-                  alt={brandName}
-                  fill
-                  className="object-contain"                 {/* cover → contain */}
-                  priority
-                  sizes="(max-width: 768px) 12rem, 22rem"     {/* mobil 12rem, desktop 22rem */}
-                />
-              </div>
             </div>
+            {/* İsteğe bağlı marka yazısı (mobilde gizli) */}
+            <span className="hidden sm:block text-sm md:text-base font-medium truncate text-white/90">
+              Mulun Hukuk &amp; Danışmanlık
+            </span>
           </Link>
 
           {/* MASAÜSTÜ MENÜ */}
@@ -201,9 +177,7 @@ export default function TopBar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-sm transition ${
-                    isActive(item.href) ? "text-white" : "text-white/80 hover:text-white"
-                  }`}
+                  className={`text-sm transition ${isActive(item.href) ? "text-white" : "text-white/80 hover:text-white"}`}
                 >
                   {item.label}
                 </Link>
@@ -211,9 +185,7 @@ export default function TopBar() {
                 <div key={item.href} className="relative group">
                   <Link
                     href={item.href}
-                    className={`flex items-center gap-1 text-sm transition ${
-                      isActive(item.href) ? "text-white" : "text-white/80 hover:text-white"
-                    }`}
+                    className={`flex items-center gap-1 text-sm transition ${isActive(item.href) ? "text-white" : "text-white/80 hover:text-white"}`}
                   >
                     {item.label}
                     <ChevronDown className="h-3 w-3" aria-hidden="true" />
@@ -225,9 +197,7 @@ export default function TopBar() {
                         key={child.href}
                         href={child.href}
                         className={`block px-4 py-2 text-sm transition ${
-                          isActive(child.href)
-                            ? "text-white bg-white/10"
-                            : "text-white/80 hover:bg-white/10 hover:text-white"
+                          isActive(child.href) ? "text-white bg-white/10" : "text-white/80 hover:bg-white/10 hover:text-white"
                         }`}
                       >
                         {child.label}
@@ -248,7 +218,7 @@ export default function TopBar() {
             onClick={() => setOpen((v) => !v)}
             className="md:hidden absolute right-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-md p-2 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors z-[65]"
           >
-            <FourLinesIcon className="h-5 w-7" lineClassName="bg-white" />
+            <FourLinesIcon className="h-5 w-7" />
           </button>
         </div>
       </div>
@@ -272,22 +242,18 @@ export default function TopBar() {
         aria-label="Mobil menü"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-          <div className="relative h-16 w-56">
-            <div className="absolute inset-0 overflow-hidden">
-              <Image
-                src={logoSrc}
-                alt={brandName}
-                fill
-                className="object-cover"
-                sizes="22rem"
-              />
-            </div>
+          <div className="relative h-12 w-auto">
+            <Image
+              src={logoSrc}
+              alt={brandName}
+              width={220}
+              height={60}
+              className="h-full w-auto object-contain"
+              sizes="220px"
+              priority
+            />
           </div>
-          <button
-            onClick={closeMenu}
-            aria-label="Menüyü kapat"
-            className="rounded-md p-2 hover:bg-white/10"
-          >
+          <button onClick={closeMenu} aria-label="Menüyü kapat" className="rounded-md p-2 hover:bg-white/10">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none">
               <path d="M6 6l12 12M18 6l-12 12" stroke="white" strokeWidth="2" strokeLinecap="round" />
             </svg>
@@ -314,44 +280,4 @@ export default function TopBar() {
                   isActive(item.href) ? "text-white" : "text-white/90 hover:text-white"
                 }`}
               >
-                {item.label}
-              </Link>
-            ) : (
-              <div key={item.href}>
-                <button
-                  onClick={() => setOpenSub((v) => !v)}
-                  className="w-full flex items-center justify-between py-3 text-base border-b border-white/10 text-white/90 hover:text-white"
-                  aria-expanded={openSub}
-                  aria-controls="submenu-calisma"
-                >
-                  {item.label}
-                  <ChevronDown className={`h-4 w-4 transition-transform ${openSub ? "rotate-180" : ""}`} />
-                </button>
-                {openSub && (
-                  <div id="submenu-calisma" className="pl-4 border-l border-white/20">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        onClick={closeMenu}
-                        className={`block py-2 text-sm transition ${
-                          isActive(child.href) ? "text-white" : "text-white/80 hover:text-white"
-                        }`}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )
-          )}
-        </nav>
-
-        <div className="mt-auto px-5 pb-6 pt-2 text-sm text-white/70">
-          © {new Date().getFullYear()} {brandName}
-        </div>
-      </aside>
-    </header>
-  );
-}
+                {item.labe
